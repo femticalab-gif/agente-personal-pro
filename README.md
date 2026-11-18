@@ -4,6 +4,11 @@ Agente mono-usuario, accesible **solo por Telegram**, que gestiona correo, calen
 documentos, finanzas personales, salud, tareas, notas y recordatorios. Siempre encendido,
 proactivo y con memoria. **Prioridad absoluta: seguridad sobre funcionalidades.**
 
+> **Si este agente es para ti:** pon tu nombre en `profile.name` de `config/config.yaml`.
+> Es obligatorio: con el nombre vacío el agente no arranca. Ajusta también ciudad, zona
+> horaria, coordenadas, idiomas, `own_email` y familia. Los nombres internos (`marc-agent`,
+> `MARC_*_KEY`, `mcp__marc__*`) son solo identificadores técnicos: no los cambies.
+
 ---
 
 ## 1. Arquitectura y modelo de seguridad (una página)
@@ -37,7 +42,7 @@ Telegram (solo TELEGRAM_USER_ID, chat privado)
 | READ | leer correo, calendario, Drive, vault, BD, búsqueda web | permitido |
 | WRITE_INTERNAL | notas, tareas, recordatorios, gastos, memoria, archivar, `gmail_draft`, eventos **sin** invitados | permitido y auditado |
 | SENSITIVE | `gmail_send`, eventos **con** invitados, borrar documentos | botones Aprobar/Rechazar con la acción y parámetros exactos; 10 min sin respuesta = rechazo; dry-run = simulación |
-| FORBIDDEN | dinero, comunicaciones económicas o de salud a terceros, responder a fraude, shell/código/fetch, cualquier tool fuera del catálogo | rechazo siempre (también en dry-run y aunque Marc apruebe), aviso a Marc |
+| FORBIDDEN | dinero, comunicaciones económicas o de salud a terceros, responder a fraude, shell/código/fetch, cualquier tool fuera del catálogo | rechazo siempre (también en dry-run y aunque lo apruebes), con aviso |
 
 **Defensas en capas**
 
@@ -52,9 +57,9 @@ Telegram (solo TELEGRAM_USER_ID, chat privado)
   saliente (correos, eventos con invitados, cancelaciones) pasa por el clasificador
   económico/salud: palabras clave (es/ca/en), IBAN, tarjetas (Luhn), importes y, si no hay
   coincidencias, el modelo económico. Si el modelo no responde ⇒ **falla en cerrado**.
-  Lo económico solo puede ir a `gmail_draft` (Marc lo envía a mano).
+  Lo económico solo puede ir a `gmail_draft` (lo envías tú a mano).
 - **Fraude/phishing**: correos que piden confirmar pagos, datos bancarios o responder sobre
-  dinero se marcan, se avisa a Marc y queda prohibido responder o redactar respuesta a ese
+  dinero se marcan, se te avisa y queda prohibido responder o redactar respuesta a ese
   mensaje, hilo o remitente.
 - **Prompt injection**: todo contenido externo va entre `<datos_no_fiables … clave=NONCE>`
   (nonce aleatorio por proceso, etiquetas falsas neutralizadas, texto oculto/invisible
@@ -86,7 +91,7 @@ configuración y se verifican en `make selftest-full`.
 
 ## 2. Checklist de pasos externos
 
-Leyenda: ✅ hecho por Claude (vía navegador) · 👤 pendiente de Marc (login, cuentas, pagos,
+Leyenda: ✅ hecho por Claude (vía navegador) · 👤 pendiente tuyo (login, cuentas, pagos,
 términos, secretos) · ⏳ pendiente.
 
 | # | Paso | Quién | Estado |

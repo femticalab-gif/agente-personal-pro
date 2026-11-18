@@ -99,7 +99,7 @@ class PolicyEngine:
                         "FORBIDDEN: el contenido saliente es "
                         + " y ".join(kinds)
                         + f" ({'; '.join(verdict.reasons)}). No se envía a terceros aunque se "
-                        "apruebe. Alternativa permitida: gmail_draft (borrador que Marc envía "
+                        "apruebe. Alternativa permitida: gmail_draft (borrador que el usuario envía "
                         "manualmente) o un evento sin invitados.",
                         summary,
                         True,

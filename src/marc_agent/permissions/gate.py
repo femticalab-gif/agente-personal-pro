@@ -76,7 +76,7 @@ class Gatekeeper:
             await self._notify(f"🧪 DRY-RUN — no se ejecuta nada real.\nHaría: {decision.summary}")
             return (
                 False,
-                f"[DRY-RUN] Acción simulada, NO ejecutada: {decision.summary}. Informa a Marc de "
+                f"[DRY-RUN] Acción simulada, NO ejecutada: {decision.summary}. Informa al usuario de "
                 "lo que se habría hecho.",
                 None,
             )
@@ -96,8 +96,8 @@ class Gatekeeper:
             self.audit.event("approval_denied", tool=decision.tool)
             return (
                 False,
-                "Marc no aprobó la acción (rechazada o sin respuesta en plazo). No la reintentes "
-                "salvo que Marc lo pida de nuevo.",
+                "El usuario no aprobó la acción (rechazada o sin respuesta en plazo). No la reintentes "
+                "salvo que el usuario lo pida de nuevo.",
                 None,
             )
         # DENY
@@ -171,9 +171,7 @@ class ToolExecutor:
             if self.gate.state.dry_run:
                 return f"[DRY-RUN] Acción simulada, NO ejecutada: {decision.summary}"
             if not self.gate.tickets.consume(spec.name, args):
-                return (
-                    "Acción sensible sin aprobación válida de Marc para estos parámetros exactos."
-                )
+                return "Acción sensible sin aprobación válida del usuario para estos parámetros exactos."
         return None
 
     async def run(self, spec: ToolSpec, args: dict[str, Any]) -> ToolOutput:

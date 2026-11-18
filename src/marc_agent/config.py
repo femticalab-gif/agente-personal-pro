@@ -45,6 +45,13 @@ class Profile(_Strict):
     # Dirección de correo propia: para no tratarla como "tercero" en filtros internos.
     own_email: str = ""
 
+    @field_validator("name")
+    @classmethod
+    def _valid_name(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("profile.name está vacío: pon tu nombre en config/config.yaml")
+        return value.strip()
+
     @field_validator("timezone")
     @classmethod
     def _valid_tz(cls, value: str) -> str:

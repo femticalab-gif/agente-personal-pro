@@ -159,7 +159,7 @@ def build(svc: Services) -> list[ToolSpec]:
         ),
         ToolSpec(
             name="weather_forecast",
-            description="Previsión del tiempo para la ciudad de Marc.",
+            description="Previsión del tiempo para la ciudad del usuario.",
             schema=obj_schema({"days": i("Días 1-7", minimum=1, maximum=7)}),
             handler=weather,
             category=Category.READ,
@@ -176,7 +176,7 @@ def build(svc: Services) -> list[ToolSpec]:
         ),
         ToolSpec(
             name="preferences_set",
-            description="Cambia una preferencia de Marc.",
+            description="Cambia una preferencia del usuario.",
             schema=obj_schema(
                 {
                     "key": s("Clave", enum=sorted(ALLOWED_PREF_KEYS)),

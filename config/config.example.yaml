@@ -1,7 +1,7 @@
 # marc-agent — configuración NO secreta. Copia a config/config.yaml y ajusta.
 
 profile:
-  name: Marc
+  name: ""               # OBLIGATORIO: tu nombre (el agente te llamará así)
   city: Barcelona
   timezone: Europe/Madrid
   latitude: 41.3874

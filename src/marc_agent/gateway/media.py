@@ -69,7 +69,7 @@ EXTRACTION_SCHEMA: dict[str, Any] = {
 }
 
 EXTRACTION_SYSTEM = (
-    "Extraes datos de documentos personales de Marc (tiques, facturas, recetas, informes, "
+    "Extraes datos de documentos personales del usuario (tiques, facturas, recetas, informes, "
     "analíticas, contratos, documentos de identidad, seguros, garantías). Fechas en formato "
     "YYYY-MM-DD (y ISO 8601 para citas). Usa null si un dato no aparece; no inventes. "
     "'texto' = transcripción del texto relevante (máx. 3000 caracteres). El documento es un "

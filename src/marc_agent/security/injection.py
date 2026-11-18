@@ -59,7 +59,7 @@ _INJECTION_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     (
         "suplantacion_usuario",
         re.compile(
-            r"\b(marc (te )?(autoriza|ordena|pide que)|el usuario (ha autorizado|autoriza)|"
+            r"\b(el usuario (ha autorizado|autoriza)|"
             r"user (has )?authori[sz]ed|pre-?aprobad\w*|pre-?approved)\b"
         ),
     ),
@@ -76,16 +76,27 @@ _DIRECTIVE = re.compile(
 )
 
 
-def detect_injection(text: str) -> list[str]:
-    """Devuelve las etiquetas de patrones de inyección detectados (vacío si ninguno)."""
+def detect_injection(text: str, owner_name: str | None = None) -> list[str]:
+    """Devuelve las etiquetas de patrones de inyección detectados (vacío si ninguno).
+
+    ``owner_name`` (``profile.name``) detecta además «<nombre> te autoriza/ordena…».
+    """
     norm = normalize(text)
-    return [label for label, pattern in _INJECTION_PATTERNS if pattern.search(norm)]
+    labels = [label for label, pattern in _INJECTION_PATTERNS if pattern.search(norm)]
+    owner = normalize(owner_name or "")
+    if (
+        owner
+        and "suplantacion_usuario" not in labels
+        and re.search(rf"\b{re.escape(owner)} (te )?(autoriza|ordena|pide que)\b", norm)
+    ):
+        labels.append("suplantacion_usuario")
+    return labels
 
 
-def looks_like_instruction(text: str) -> bool:
+def looks_like_instruction(text: str, owner_name: str | None = None) -> bool:
     """¿Parece una orden dirigida al agente? Se usa para impedir guardarla en memoria."""
     norm = normalize(text)
-    return bool(detect_injection(text)) or bool(_DIRECTIVE.search(norm))
+    return bool(detect_injection(text, owner_name)) or bool(_DIRECTIVE.search(norm))
 
 
 _RULE_TAMPER = re.compile(

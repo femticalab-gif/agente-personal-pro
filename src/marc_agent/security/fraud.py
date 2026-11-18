@@ -61,7 +61,7 @@ def keyword_assess(text: str) -> list[str]:
 
 
 _SYSTEM = (
-    "Eres un detector de fraude para el correo personal de Marc. Decide si el mensaje le "
+    "Eres un detector de fraude para el correo personal del usuario. Decide si el mensaje le "
     "PIDE una acción relacionada con dinero o datos sensibles: confirmar o autorizar un pago "
     "o transferencia, facilitar datos bancarios, tarjetas o credenciales, responder sobre "
     "dinero, deudas o cobros, o cambiar una cuenta de cobro. Un aviso informativo sin "

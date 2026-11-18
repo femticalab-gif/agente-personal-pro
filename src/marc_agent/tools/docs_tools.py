@@ -78,7 +78,7 @@ def build(svc: Services) -> list[ToolSpec]:
     async def vault_send(args: dict[str, Any]) -> ToolOutput:
         data, _mime, filename = vault.read_file(args["doc_id"])
         await svc.notifier.send_document(data, filename, caption=f"📎 {filename}")
-        return ToolOutput("Documento enviado a Marc por Telegram.")
+        return ToolOutput("Documento enviado al usuario por Telegram.")
 
     doc_type = s("Tipo de documento", enum=list(DOC_TYPES))
     return [
@@ -169,7 +169,7 @@ def build(svc: Services) -> list[ToolSpec]:
         ),
         ToolSpec(
             name="vault_send",
-            description="Envía a Marc (solo a él, por Telegram) el fichero original de un documento.",
+            description="Envía al usuario (solo a él, por Telegram) el fichero original de un documento.",
             schema=obj_schema({"doc_id": s("Id")}, ["doc_id"]),
             handler=vault_send,
             category=Category.READ,

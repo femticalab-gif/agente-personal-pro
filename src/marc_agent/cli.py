@@ -251,7 +251,7 @@ def cmd_selftest(args: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="marc-agent", description="Agente personal privado de Marc"
+        prog="marc-agent", description="Agente personal privado por Telegram"
     )
     parser.add_argument("--config", default=DEFAULT_CONFIG, help="Ruta de config.yaml")
     sub = parser.add_subparsers(dest="cmd")

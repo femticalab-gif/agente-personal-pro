@@ -92,7 +92,7 @@ def build_services(
             timeout=120.0,
         )
         llm = AnthropicLLM(client, config.models.cheap, budget)
-    wrapper = UntrustedWrapper()
+    wrapper = UntrustedWrapper(owner_name=config.profile.name)
     google_auth = GoogleAuth(db, http, secrets.google_client_id, secrets.google_client_secret)
     google_api = GoogleApi(google_auth, http)
     gmail = GmailClient(google_api)
@@ -125,7 +125,7 @@ def build_services(
         stt=SpeechToText(
             http, secrets.google_stt_api_key, config.stt.language, config.stt.alternative_languages
         ),
-        memory=MemoryService(db, index),
+        memory=MemoryService(db, index, config.profile.name),
         notes=NotesService(db, index),
         tasks=TasksService(db, tz),
         contacts=ContactsService(db, index),
