@@ -1,0 +1,101 @@
+[project]
+name = "marc-agent"
+version = "1.0.0"
+description = "Agente personal privado mono-usuario de Marc, accesible solo por Telegram."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+# Versiones fijadas. Procedimiento de actualización mensual: ver README §5.
+dependencies = [
+    "anthropic==1.14.0",
+    "apscheduler==3.11.3",
+    "claude-agent-sdk==0.2.167",
+    "cryptography==50.0.2",
+    "httpx==0.28.1",
+    "openpyxl==3.1.5",
+    "pydantic==2.14.1",
+    "pypdf==6.20.1",
+    "python-dateutil==2.9.0.post0",
+    "python-docx==1.2.0",
+    "python-telegram-bot==22.8",
+    "pyyaml==6.0.3",
+    "tzdata==2026.5",
+]
+
+[project.scripts]
+marc-agent = "marc_agent.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.13.1,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy==2.4.0",
+    "pytest==9.1.1",
+    "pytest-asyncio==1.4.0",
+    "pytest-cov==7.1.0",
+    "respx==0.23.1",
+    "ruff==0.17.0",
+    "time-machine==3.5.1",
+    "types-python-dateutil==2.9.0.20260807",
+    "types-pyyaml==6.0.12.20260906",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "ASYNC", "RUF", "SIM", "PL", "C4", "PT"]
+ignore = [
+    "PLR0913",  # muchas tools reciben muchos parámetros por diseño
+    "PLR2004",  # números mágicos en tests y umbrales documentados
+    "PLR0911",
+    "PLR0912",
+    "PLR0915",
+    "RUF001",   # caracteres ambiguos: el texto es en español
+    "RUF002",
+    "RUF003",
+    "S608",     # SQL construido solo con nombres de tabla/columna internos y validados
+    "PLR0917",  # servicios de dominio con varios parámetros posicionales opcionales
+    "PLC0415",  # imports diferidos intencionados (CLI y dependencias pesadas)
+]
+
+[tool.ruff.lint.pycodestyle]
+max-line-length = 120  # el formateador envuelve a 100; se toleran literales largos
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106", "S108", "PLC0415", "ASYNC230", "S311", "PT018", "PT011", "PLR0914", "PLR0915", "E501", "SLF001", "ARG001", "PLW0108", "ASYNC240", "RUF012"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+mypy_path = "src"
+packages = ["marc_agent"]
+
+[[tool.mypy.overrides]]
+module = ["apscheduler.*", "docx.*", "openpyxl.*", "respx.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+filterwarnings = ["error::pytest.PytestUnraisableExceptionWarning"]
+
+[tool.coverage.run]
+source = ["marc_agent"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+skip_covered = true
+exclude_also = [
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "\\.\\.\\.$",
+]

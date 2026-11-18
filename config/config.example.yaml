@@ -1,0 +1,58 @@
+# marc-agent — configuración NO secreta. Copia a config/config.yaml y ajusta.
+
+profile:
+  name: Marc
+  city: Barcelona
+  timezone: Europe/Madrid
+  latitude: 41.3874
+  longitude: 2.1686
+  languages: [es, ca]
+  own_email: ""          # tu dirección de Gmail
+  family: []             # p. ej. [{name: Laura, relation: pareja}, {name: Pau, relation: hijo}]
+  notes: ""              # contexto breve que quieras que el agente tenga siempre presente
+
+models:
+  main: claude-opus-5-5      # razonamiento y acciones
+  cheap: claude-haiku-5-5    # clasificación, resúmenes, recordatorios
+  vision: claude-opus-5-5    # extracción de tiques, facturas, informes
+  subagent: claude-haiku-5-5 # subagentes de solo lectura
+  fallback: claude-sonnet-5-5
+  effort: medium
+
+budget:
+  daily_usd: 5.0
+  monthly_usd: 60.0
+  warn_ratio: 0.8
+
+schedule:
+  briefing_time: "07:45"
+  mail_watch_minutes: 5
+  weekly_day: sun
+  weekly_time: "19:00"
+  backup_time: "03:30"
+  backup_keep: 14
+  due_reminder_days: [7, 1]
+  due_reminder_time: "09:00"
+  doc_expiry_days: [30, 7]
+  appointment_reminders_hours: [24, 2]
+  session_idle_minutes: 30
+  heartbeat_seconds: 60
+  watchdog_stale_minutes: 15
+
+telegram:
+  rate_limit_per_minute: 20
+  rate_limit_burst: 8
+  stream_edit_interval_s: 1.2
+  progress_after_s: 15
+
+security:
+  approval_timeout_s: 600   # 10 min sin respuesta = rechazo
+  dry_run_default: false
+  max_subagents: 4
+
+stt:
+  language: es-ES
+  alternative_languages: [ca-ES]
+
+weather_enabled: true
+data_dir: /data

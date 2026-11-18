@@ -1,0 +1,78 @@
+# marc-agent: agente + watchdog en una red SIN salida a Internet; solo el proxy de egress
+# (allowlist de dominios) puede salir. Cero puertos publicados (Telegram por long polling).
+
+name: marc-agent
+
+x-hardening: &hardening
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  restart: always
+  logging:
+    driver: json-file
+    options: {max-size: "10m", max-file: "5"}
+
+x-proxy-env: &proxy-env
+  HTTPS_PROXY: http://egress:3128
+  HTTP_PROXY: http://egress:3128
+  NO_PROXY: localhost,127.0.0.1
+
+services:
+  egress:
+    <<: *hardening
+    build: ./egress
+    image: marc-agent-egress:local
+    tmpfs: ["/tmp:size=16m"]
+    networks: [internal, egress]
+    mem_limit: 128m
+    cpus: 0.5
+    pids_limit: 64
+
+  agent:
+    <<: *hardening
+    build: .
+    image: marc-agent:local
+    command: ["run"]
+    env_file: .env
+    environment:
+      <<: *proxy-env
+    volumes:
+      - data:/data
+      - ./config/config.yaml:/app/config.yaml:ro
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+      # Transcripts del CLI solo en RAM (la copia persistente va cifrada en SQLite).
+      - /run/claude:size=256m,uid=10001,gid=10001,mode=0700
+    networks: [internal]
+    depends_on: [egress]
+    mem_limit: 1536m
+    cpus: 1.5
+    pids_limit: 256
+
+  watchdog:
+    <<: *hardening
+    image: marc-agent:local
+    command: ["watchdog"]
+    # Mínimo privilegio: solo el token del bot y el id de Marc (interpolados desde .env).
+    environment:
+      <<: *proxy-env
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:?falta TELEGRAM_BOT_TOKEN en .env}
+      TELEGRAM_USER_ID: ${TELEGRAM_USER_ID:?falta TELEGRAM_USER_ID en .env}
+    volumes:
+      - data:/data:ro
+      - ./config/config.yaml:/app/config.yaml:ro
+    tmpfs: ["/tmp:size=16m", "/run/claude:size=1m,uid=10001,gid=10001"]
+    networks: [internal]
+    depends_on: [egress, agent]
+    healthcheck: {disable: true}
+    mem_limit: 128m
+    cpus: 0.25
+    pids_limit: 64
+
+networks:
+  internal:
+    internal: true  # sin gateway: nada sale de aquí salvo a través de egress
+  egress: {}
+
+volumes:
+  data: {}
