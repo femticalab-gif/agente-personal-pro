@@ -6,7 +6,7 @@ proactivo y con memoria. **Prioridad absoluta: seguridad sobre funcionalidades.*
 
 > **Si este agente es para ti:** pon tu nombre en `profile.name` de `config/config.yaml`.
 > Es obligatorio: con el nombre vacío el agente no arranca. Ajusta también ciudad, zona
-> horaria, coordenadas, idiomas, `own_email` y familia. Los nombres internos (`marc-agent`,
+> horaria, coordenadas, `own_email` y familia. Los nombres internos (`marc-agent`,
 > `MARC_*_KEY`, `mcp__marc__*`) son solo identificadores técnicos: no los cambies.
 
 ---
