@@ -121,7 +121,6 @@ scp scripts/harden_server.sh root@IP_PUBLICA:/root/    # solo la primera vez
 ssh root@IP_PUBLICA 'bash /root/harden_server.sh --user marc'
 
 # 2) Ya por Tailscale, como marc:
-# Repo privado: el clon pide tu usuario de GitHub y un token; también puedes copiar la carpeta con rsync/scp
 git clone https://github.com/femticalab-gif/agente-personal-pro.git /opt/marc-agent && cd /opt/marc-agent
 cp .env.example .env && chmod 600 .env
 make init-keys                       # genera las claves de cifrado sin mostrarlas
